@@ -1,66 +1,57 @@
-import time
-
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
+
 from locators.vacancies_locators import VacanciesLocators
+from utils.base_class import BaseClass
 
 
-class VacanciesPage:
+class VacanciesPage(BaseClass):
 
     def __init__(self, driver):
         self.driver = driver
 
     def select_department(self, department):
-        selected_department = self.driver.find_element(*VacanciesLocators.DEPARTMENT)
-        if selected_department.text != department:
-            selected_department.click()
+        default_department = self.driver.find_element(*VacanciesLocators.DEPARTMENT)
+        if default_department.text != department:
+            default_department.click()
             ActionChains(self.driver).move_to_element(
                 self.driver.find_element(By.XPATH, '//a[text()="' + department + '"]')).perform()
             self.driver.find_element(By.XPATH, '//a[text()="' + department + '"]').click()
-
-    def assert_selected_department(self, department):
         selected_department = self.driver.find_element(*VacanciesLocators.DEPARTMENT)
         assert department in selected_department.text
 
     def select_country(self, country):
-        selected_country = self.driver.find_element(*VacanciesLocators.COUNTRY)
-        if selected_country.text != country:
-            selected_country.click()
+        default_country = self.driver.find_element(*VacanciesLocators.COUNTRY)
+        if default_country.text != country:
+            default_country.click()
             ActionChains(self.driver).move_to_element(
                 self.driver.find_element(By.XPATH, '//a[text()="' + country + '"]')).perform()
             self.driver.find_element(By.XPATH, '//a[text()="' + country + '"]').click()
-
-    def assert_selected_country(self, country):
         selected_country = self.driver.find_element(*VacanciesLocators.COUNTRY)
         assert country in selected_country.text
 
     def select_state(self, state):
-        selected_state = self.driver.find_element(*VacanciesLocators.STATE)
-        if selected_state.text != state:
-            selected_state.click()
+        default_state = self.driver.find_element(*VacanciesLocators.STATE)
+        if default_state.text != state:
+            default_state.click()
             ActionChains(self.driver).move_to_element(
                 self.driver.find_element(By.XPATH, '//a[text()="' + state + '"]')).perform()
             self.driver.find_element(By.XPATH, '//a[text()="' + state + '"]').click()
-
-    def assert_selected_state(self, state):
         selected_state = self.driver.find_element(*VacanciesLocators.STATE)
         assert state in selected_state.text
 
     def select_city(self, city):
-        selected_country = self.driver.find_element(*VacanciesLocators.COUNTRY)
-        if selected_country.text == "USA":
-            selected_city = self.driver.find_element(*VacanciesLocators.CITY_USA)
+        default_country = self.driver.find_element(*VacanciesLocators.COUNTRY)
+        if default_country.text == "USA":
+            default_city = self.driver.find_element(*VacanciesLocators.CITY_USA)
         else:
-            selected_city = self.driver.find_element(*VacanciesLocators.CITY)
-        if selected_city.text != city:
-            selected_city.click()
+            default_city = self.driver.find_element(*VacanciesLocators.CITY)
+        if default_city.text != city:
+            default_city.click()
             ActionChains(self.driver).move_to_element(
                 self.driver.find_element(By.XPATH, '//a[text()="' + city + '"]')).perform()
             self.driver.find_element(By.XPATH, '//a[text()="' + city + '"]').click()
-
-    def assert_selected_city(self, city):
-        selected_country = self.driver.find_element(*VacanciesLocators.COUNTRY)
-        if selected_country.text == "USA":
+        if default_country.text == "USA":
             selected_city = self.driver.find_element(*VacanciesLocators.CITY_USA)
         else:
             selected_city = self.driver.find_element(*VacanciesLocators.CITY)
@@ -73,5 +64,7 @@ class VacanciesPage:
         card_elements = self.driver.find_elements(*VacanciesLocators.VACANCY_CARDS)
         visible_card_elements = [element for element in card_elements if element.is_displayed()]
         available_positions = len(visible_card_elements)
-        print("Number of available positions:", available_positions)
         assert available_positions == expected_positions
+        vacancies = str(available_positions)
+        log = self.get_logger()
+        log.info("Number of available positions matches the expected value: " + vacancies)

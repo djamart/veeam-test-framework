@@ -7,7 +7,7 @@ def setup(request):
     driver = webdriver.Chrome()
     driver.get("https://careers.veeam.com/vacancies")
     driver.maximize_window()
-    driver.implicitly_wait(5)
+    driver.implicitly_wait(10)
     request.cls.driver = driver
     yield
     driver.close()
